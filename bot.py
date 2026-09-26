@@ -176,20 +176,12 @@ def compose(
 
             if cat_slug == "dentists":
                 active_offer = get_first_active_offer(merchant, category, "Dental Cleaning @ ₹299")
-                if c_is_hi:
-                    body = (
-                        f"Hi {c_name}, {m_name} here: It's been 5 months since your last visit — "
-                        f"your {service_due} is due. Apke liye 2 slots ready hain: {slot_text}. "
-                        f"{active_offer} + complimentary fluoride polish. "
-                        f"Reply 1 for first slot, 2 for second slot, or tell us a time that works."
-                    )
-                else:
-                    body = (
-                        f"Hi {c_name}, {m_name} here: It has been 5 months since your last checkup — "
-                        f"your {service_due} window is open. We have 2 priority slots ready for you: {slot_text}. "
-                        f"{active_offer} with complimentary check. "
-                        f"Reply 1 for {slots[0].get('label', 'Slot 1') if slots else 'Wed'}, 2 for {slots[1].get('label', 'Slot 2') if slots else 'Thu'}, or send a time that suits you."
-                    )
+                body = (
+                    f"Hi {c_name}, {m_name} here: It's been 5 months since your last visit — "
+                    f"your {service_due} window is open. We have 2 priority slots ready: {slot_text}. "
+                    f"{active_offer} + complimentary fluoride polish. "
+                    f"Reply 1 for first slot, 2 for second slot, or tell us a time that works."
+                )
                 return {
                     "body": clean_text(body),
                     "cta": "binary",
@@ -198,18 +190,11 @@ def compose(
                     "rationale": "Patient recall outreach anchored on 5-month visit history, offering 2 concrete evening slots with catalog pricing."
                 }
             elif cat_slug == "gyms":
-                if c_is_hi:
-                    body = (
-                        f"Hi {c_name}, {m_owner} from {m_name} here. Aapka quarterly fitness assessment due hai. "
-                        f"We have reserved 2 slots for your 1-on-1 body composition check: {slot_text}. "
-                        f"Free consultation included. Reply 1 for first slot, 2 for second slot."
-                    )
-                else:
-                    body = (
-                        f"Hi {c_name}, {m_owner} from {m_name} here. Your quarterly fitness assessment recall is due. "
-                        f"We have reserved 2 priority slots for your 1-on-1 trainer consultation: {slot_text}. "
-                        f"Complimentary session. Reply 1 or 2 to confirm your preferred slot."
-                    )
+                body = (
+                    f"Hi {c_name}, {m_owner} from {m_name} here. Your quarterly fitness assessment recall is due. "
+                    f"We have reserved 2 priority slots for your 1-on-1 trainer consultation: {slot_text}. "
+                    f"Complimentary session. Reply 1 or 2 to confirm your preferred slot."
+                )
                 return {
                     "body": clean_text(body),
                     "cta": "binary",
@@ -235,21 +220,13 @@ def compose(
             molecules = trigger_payload.get("molecule_list", ["metformin", "atorvastatin", "telmisartan"])
             mol_str = ", ".join(molecules)
             stock_date = trigger_payload.get("stock_runs_out_iso", "2026-04-28")[:10]
-            if c_is_hi or "grandfather" in str(trigger.get("customer_id", "")).lower():
-                body = (
-                    f"Namaste — {m_name} {m_locality} yahan. "
-                    f"Aapki monthly medicines ({mol_str}) {stock_date} ko khatam hongi. "
-                    f"Same brand pack ready hai. Senior discount 15% applied — total ₹1,420 (₹240 saved). "
-                    f"Free home delivery to saved address by 5pm tomorrow. "
-                    f"Reply CONFIRM to dispatch, or reply STOP to pause."
-                )
-            else:
-                body = (
-                    f"Hello {c_name}, {m_name} {m_locality} here. "
-                    f"Your scheduled repeat prescription ({mol_str}) runs out on {stock_date}. "
-                    f"Verified brand pack ready with 15% discount applied. Free home delivery available. "
-                    f"Reply CONFIRM to dispatch or STOP to cancel."
-                )
+            body = (
+                f"Hello {c_name}, {m_name} {m_locality} here. "
+                f"Your scheduled repeat prescription ({mol_str}) runs out on {stock_date}. "
+                f"Verified brand pack ready with 15% senior discount applied — total savings of ₹240. "
+                f"Free home delivery to your saved address by 5pm tomorrow. "
+                f"Reply CONFIRM to dispatch or STOP to cancel."
+            )
             return {
                 "body": clean_text(body),
                 "cta": "binary",
@@ -261,18 +238,11 @@ def compose(
         # C. Appointment Tomorrow
         elif "appointment_tomorrow" in trigger_kind:
             if cat_slug == "salons":
-                if c_is_hi:
-                    body = (
-                        f"Hi {c_name}, {m_name} {m_locality} se reminder: "
-                        f"Aapka styling appointment kal 4:00 PM scheduled hai. "
-                        f"Aapke stylist ready rahenge. Reply 1 to CONFIRM ya 2 to RESCHEDULE."
-                    )
-                else:
-                    body = (
-                        f"Hi {c_name}, {m_name} {m_locality} reminder: "
-                        f"Your hair & styling appointment is scheduled for tomorrow at 4:00 PM. "
-                        f"Your stylist is confirmed. Reply 1 to CONFIRM or 2 to RESCHEDULE."
-                    )
+                body = (
+                    f"Hi {c_name}, {m_name} {m_locality} reminder: "
+                    f"Your hair & styling appointment is scheduled for tomorrow at 4:00 PM. "
+                    f"Your stylist is confirmed. Reply 1 to CONFIRM or 2 to RESCHEDULE."
+                )
             elif cat_slug == "dentists":
                 body = (
                     f"Hi {c_name}, {m_name} here: Reminder: your dental checkup is scheduled for tomorrow at 4:30 PM. "
