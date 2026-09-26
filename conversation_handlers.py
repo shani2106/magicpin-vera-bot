@@ -174,7 +174,18 @@ def respond(
         "message": merchant_message
     })
 
-    # 1. Check Hostile / Opt-out
+    # 1. Check Auto-Reply FIRST (before anything else)
+    if is_auto_reply(merchant_message, state.turns[:-1]):
+        state.auto_reply_count += 1
+        state.consecutive_auto_replies += 1
+        state.is_closed = True
+        state.stage = "ended"
+        return {
+            "action": "end",
+            "rationale": "Detected canned WhatsApp Business auto-reply; ending immediately to avoid bot loop."
+        }
+
+    # 2. Check Hostile / Opt-out
     if is_hostile_or_opt_out(merchant_message):
         state.is_closed = True
         state.stage = "ended"
@@ -183,7 +194,7 @@ def respond(
             "rationale": "Merchant opted out or signaled hostility; gracefully exiting immediately without further nudges."
         }
 
-    # 2. Check Intent Transition (CRITICAL: MUST SWITCH TO ACTION, ZERO QUALIFYING WORDS)
+    # 3. Check Intent Transition (CRITICAL: MUST SWITCH TO ACTION, ZERO QUALIFYING WORDS)
     # Checking intent before auto-reply ensures explicit commitment is NEVER falsely classified as auto-reply
     if is_intent_commitment(merchant_message) or state.stage == "planning":
         state.stage = "executing"
@@ -227,16 +238,7 @@ def respond(
             "rationale": "Merchant signaled explicit intent; transitioned immediately from qualification to action mode with zero qualifying hesitation."
         }
 
-    # 3. Check Auto-Reply
-    if is_auto_reply(merchant_message, state.turns[:-1]):
-        state.auto_reply_count += 1
-        state.consecutive_auto_replies += 1
-        state.is_closed = True
-        state.stage = "ended"
-        return {
-            "action": "end",
-            "rationale": "Detected canned WhatsApp Business auto-reply pattern; ending conversation immediately to avoid burning turns."
-        }
+    # (Auto-reply already checked at step 1 above)
 
     # Reset consecutive auto replies on real message
     state.consecutive_auto_replies = 0
