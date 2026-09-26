@@ -253,12 +253,8 @@ def respond(
         }
 
     # 5. General engaged multi-turn response
-    # Ensure helpful next-step orientation
     salutation = f"Dr. {owner_name}" if category.get("slug") == "dentists" else f"Hi {owner_name}"
-    if is_hi_en:
-        body = f"{salutation}, bilkul sahi. Maine aapke profile ke liye recommendations note kar li hain. Ready to proceed? Reply YES."
-    else:
-        body = f"{salutation}, noted. I have updated the recommendations for your profile. Ready to proceed? Reply YES."
+    body = f"{salutation}, noted. I have updated the recommendations for your profile. Ready to proceed? Reply YES."
 
     return {
         "action": "send",
