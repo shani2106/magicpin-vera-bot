@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# Scratch / local test files
+inspect_pairs.py
+validate_sub.py
+generate_submission.py
+
+# Expanded dataset (generated locally, not needed in deploy)
+expanded/
+
+# IDE / OS
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# Logs
+*.log
